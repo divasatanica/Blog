@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>发表新文章</title>
+</head>
+<style>
+	html {
+		font-size: 14px;
+	}
+	body {
+		background-color: rgb(200,200,200);
+	}
+ 	.container {
+	 	width: 58rem; 
+		margin: 5rem auto;
+		padding:20px 30px;
+		background-color: rgba(255,255,255,0.7);
+		overflow: auto;
+	}
+	.passage {
+		margin-bottom: 2rem;
+	}
+	#header {
+		width: 52rem;
+	}
+	.passage label {
+		margin-right:1.473rem;
+	}
+	textarea {
+		resize: none;
+		width: 58rem;
+		max-width: 75rem;
+		display: block;
+		margin: 0 auto;
+		margin-bottom: 2rem;
+		border: none;	
+	}
+	#paraDiv {
+		display:block;
+		float: right;
+		padding: 15px 18px;
+		border: none;
+		border-radius: 5px;
+		font-size: 1.2rem;
+		background-color: rgba(0,162,232,0.7);
+		color: white;
+		transition: all 0.3s ease-in;
+	}
+	#paraDiv:hover {
+		background-color: rgba(153,217,234,0.7);
+	}
+	#ajax {
+		padding: 5px 8px;
+		border-radius: 1px;
+		font-size:1.1rem;
+		transition: all 0.2s ease-in;
+	}
+	#ajax:hover {
+		background-color: rgb(5,5,5);
+		color: white;
+	}
+	button {
+		cursor: pointer;
+	}
+	button ,input{
+		border: none;
+	}
+</style>
+<body>
+	<div class="container">
+		<div class="passage">
+			<label for="header">文章标题:</label><input id="header">
+		</div>
+		<textarea id="para" rows="30" cols="100"></textarea>
+		<div class="img">
+			<input name="file" id="upimg" type="file">
+			<button id="ajax">插入图片</button>
+		</div>
+		<button id="paraDiv">上传文章</button>
+		<p>请使用Markdown语法</p>
+	</div>
+</body>
+	<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>    
+	<script>
+		let paras = [];
+		let para2div = document.getElementById("para");
+		let btn = document.getElementById("paraDiv");
+		let head = document.getElementById("header");
+		let count = 0;
+		let cursor = document.getElementById('test');
+		let upload = document.getElementById("ajax");
+		let upimg = document.getElementById("upimg");
+		var gotCount = $.ajax({
+			type:'GET',
+			url:'http://comacc.top/article/newest/',
+			dataType:'json',
+			success:function(){
+				var o = JSON.parse(gotCount.responseText);
+				var date = new Date();
+				date = String(date.getFullYear()) + ((date.getMonth()+1)>9?'':'0') + String(date.getMonth()+1) + (date.getDate()>9?'':'0') + String(date.getDate());
+				if(o[0].timeStamp.slice(0, 8) == date){
+					count = Number(o[0].timeStamp.slice(8)) + 1;
+				}
+				else{
+					count = 0;
+				}
+			}
+		});
+		upload.addEventListener("click", () => {
+			uploadImg();
+			function uploadImg(){
+				let form = new FormData();
+				form.append("files", upimg.files[0]);
+        let a = $.ajax({
+          url: "http://comacc.top/upload/image",
+          type: "POST",
+          contentType: false,
+          processData: false,
+          data: form,
+					success(res){
+						_url = res[0].url;
+						setURL(_url);
+					},
+          error(XMLHttpRequest) {
+            alert(`Error code: ${XMLHttpRequest.status}`);
+          }
+        });
+      }
+		}, false);
+		btn.addEventListener("click", () => {
+			let a = {};
+			let b = new Date();
+			a.header = head.value;
+			a.passage2mark = para2div.value;
+			a.count = count;
+			a.clock = `${b.getHours()}:`+ (b.getMinutes()<10?'0':'') + `${b.getMinutes()}`;
+			head.value = "";
+			para2div.value = "";
+			$.ajax({
+				type:'POST',
+				url:'http://comacc.top/article/new',
+				dataType:'json',
+				data:a,
+				success:function(res){
+					alert(res.message);
+					count ++;
+				}
+			})
+		}); 	
+		function setURL(url) {
+			var rie; //全局变量
+			let str = `\n\n![输入图片描述](${url})`;
+			GetCursor();
+			insertText(str);
+			function GetCursor() {
+				if (document.all) {//IE要保存Range
+					var obj = document.getElementById('para');
+					obj.focus(); 
+					rie = document.selection.createRange();
+					console.log(rie);
+				}
+			}
+			//光标定位与指定位置插入文本
+			//str ---   要插入的字符
+			function insertText(str) {
+				var obj = document.getElementById('para');
+				if (document.selection) { //ie
+					obj.focus();//先激活当前对象
+					rie.text = str;
+				} 
+				else if (typeof obj.selectionStart === 'number' && typeof obj.selectionEnd === 'number') { //非ie
+					var startPos = obj.selectionStart,
+							endPos = obj.selectionEnd,
+							cursorPos = startPos,
+							tmpStr = obj.value;
+					let reg = new RegExp(/\n$/g);
+					let startStr = tmpStr.substring(0, startPos)
+					if(reg.test(startStr)){
+						str = `\n![输入图片描述](${url})`;
+					}
+					obj.value = tmpStr.substring(0, startPos) + str + tmpStr.substring(endPos, tmpStr.length);
+					cursorPos += str.length;
+					obj.selectionStart = obj.selectionEnd = cursorPos;
+					} 
+					else {
+							obj.value += str;
+					}
+			}
+		} 
+	</script>
+</html>
