@@ -1,0 +1,110 @@
+* {
+	margin:0;
+	padding:0;
+}
+
+h2, h3, h4, h5, h6 {
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	text-indent: 1.5rem;
+}
+
+/* h2:after{
+	display: block;
+	content: '';
+	margin-top:5px;
+	width: 100%;
+	border:1px solid rgb(200,200,200);
+	background: rgb(200,200,200);
+} */
+
+pre, code {
+	font-family:'SiYuan-ExtraLigb32141ec518da7';
+	font-weight: lighter;
+}
+
+body {
+	background:rgb(200, 200, 200);
+}
+
+html {
+	font-size:14px;
+}
+
+a {
+	text-decoration:none;
+	color:black;
+}
+
+img {
+	width: 75%;
+	margin: 0 auto;
+}
+
+.clearfix {
+	overflow:auto;
+	zoom:1;
+}
+
+.cusFont {
+
+	font-family:'SiYuan-ExtraLigb32141ec518da7' ,Microsoft Yahei;
+	font-weight:lighter;
+}
+
+.circle-angle{
+	border-radius:5px;
+}
+
+#article-show {
+	margin-bottom: 3.6rem;
+}
+
+.single-article h1 {
+	font-size: 3rem;
+}
+
+.single-article li {
+	margin-left: 4rem;
+}
+
+.index-show p {
+	text-indent:2rem;
+	font-family:'SiYuan-ExtraLigb32141ec518da7' ,Microsoft Yahei;
+	font-weight:lighter;
+	margin-bottom: 0.5rem;
+	margin-top: 0.5rem;
+	font-size: 1.2rem;
+}
+
+.blog-header div {
+	margin:0 auto;
+	padding:3rem;
+	width:75%;
+}
+
+.back{
+	margin:0 auto;
+	width:75%;
+} 
+
+.back-button {
+	border: none;
+	padding: 5px 8px;
+	background: none;
+}
+
+.index-show {
+	display:block;
+	background:rgba(225, 225, 225, 0.7);
+	width:75%;
+	margin:0 auto;
+	margin-top:0px;
+	padding:2rem 2.4rem;
+}
+
+.time-stamp {
+	display: inline-block;
+	margin-bottom: 2rem;
+	margin-right:	2rem;
+}
